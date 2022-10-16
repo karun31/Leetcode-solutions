@@ -26,6 +26,7 @@ public:
         return ans;
     }
     
+
     int memoization(vector<int>& jobDifficulty,int n, int d, int ind,vector<vector<int>>& memo){
         if(ind == n && d != 0){
             return -1;
@@ -53,9 +54,7 @@ public:
         }
         return memo[d][ind] = ans;
     }
-    
-   
-    
+        
     
     int minDifficulty(vector<int>& jobDifficulty, int d) {
         int n = jobDifficulty.size();
@@ -71,6 +70,6 @@ public:
         }
         vector<vector<int>> memo(d+1,vector<int>(n,-1));
         return memoization(jobDifficulty,n,d,0,memo);
-        return rec(jobDifficulty,n,d,0);
+        // return rec(jobDifficulty,n,d,0);
     }
 };
