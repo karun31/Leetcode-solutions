@@ -7,32 +7,63 @@ class Solution
 {
 	public:
 	//Function to return list containing vertices in Topological order. 
+	//DFS
+// 	void fillStack(int n, vector<int> adj[],stack<int>& s, vector<bool>& visited, int si){
+// 	    visited[si] = true;
+// 	    for(auto adjVertex : adj[si]){
+// 	        if(!visited[adjVertex]){
+// 	            fillStack(n,adj,s,visited,adjVertex);
+// 	        }
+// 	    }
+// 	    s.push(si);
+// 	}
 	
-	void fillStack(int n, vector<int> adj[],stack<int>& s, vector<bool>& visited, int si){
-	    visited[si] = true;
-	    for(auto adjVertex : adj[si]){
-	        if(!visited[adjVertex]){
-	            fillStack(n,adj,s,visited,adjVertex);
-	        }
-	    }
-	    s.push(si);
-	}
+// 	vector<int> topoSort(int V, vector<int> adj[]) 
+// 	{
+// 	    // code here
+// 	    vector<int> ans;
+// 	    stack<int> s;
+// 	    vector<bool> visited(V,false);
+// 	    for(int i = 0; i < V; i++){
+// 	        if(!visited[i]){
+// 	            fillStack(V,adj,s,visited,i);
+// 	        }
+// 	    }
+	    
+// 	    while(!s.empty()){
+// 	        ans.push_back(s.top());
+// 	        s.pop();
+// 	    }
+// 	    return ans;
+// 	}
 	
-	vector<int> topoSort(int V, vector<int> adj[]) 
-	{
-	    // code here
-	    vector<int> ans;
-	    stack<int> s;
-	    vector<bool> visited(V,false);
+	
+	//BFS
+	vector<int> topoSort(int V, vector<int> adj[]){
+	    vector<int> indegree(V,0);
 	    for(int i = 0; i < V; i++){
-	        if(!visited[i]){
-	            fillStack(V,adj,s,visited,i);
+	        for(auto adjVertex: adj[i]){
+	            indegree[adjVertex]++;
 	        }
 	    }
 	    
-	    while(!s.empty()){
-	        ans.push_back(s.top());
-	        s.pop();
+	    queue<int> q;
+	    for(int i = 0; i < V; i++){
+	        if(indegree[i] == 0){
+	            q.push(i);
+	        }
+	    }
+	    vector<int> ans;
+	    while(!q.empty()){
+	        int node = q.front();
+	        q.pop();
+	        ans.push_back(node);
+	        for(auto adjVertex : adj[node]){
+	            indegree[adjVertex]--;
+	            if(indegree[adjVertex] == 0){
+	                q.push(adjVertex);
+	            }
+	        }
 	    }
 	    return ans;
 	}
