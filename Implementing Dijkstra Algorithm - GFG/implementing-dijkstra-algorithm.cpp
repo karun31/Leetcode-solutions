@@ -8,53 +8,47 @@ class Solution
 	public:
 	//Function to find the shortest distance of all the vertices
     //from the source vertex S.
-    vector <int> dijkstra(int n, vector<vector<int>> adj[], int s)
+    vector <int> dijkstra(int V, vector<vector<int>> adj[], int S)
     {
         // Code here
-        
-        vector<vector<int>> mat(n,vector<int>(n,0));
-        for(int i = 0; i < n; i++){
-            // for(auto adjVertex_weights = adj[i]){
-            //     int v = adjVertex_weights[0];
-            //     int w = adjVertex_weights[1];
-            //     mat[i][v] = w;
-            // }
-            for(int j = 0; j < adj[i].size(); j++){
-                vector<int> temp = adj[i][j];
-                int x = i;
-                int y = temp[0];
-                int w = temp[1];
-                mat[x][y] = w;
+        vector<vector<int>> mat(V,vector<int>(V,-1));
+        for(int i = 0; i < V; i++){
+            vector<vector<int>> temp = adj[i];
+            for(int j = 0; j < temp.size(); j++){
+                int s = temp[j][0];
+                int w = temp[j][1];
+                mat[i][s] = w;
+                mat[s][i] = w;
             }
         }
-        vector<int> distances(n,INT_MAX);
-    set<pair<int,int>> pending;
-    distances[s] = 0;
-    pending.insert({0,s});
-    while(!pending.empty()){
-        auto front = *pending.begin();
-        int dis = front.first;
-        int node = front.second;
-        pending.erase(pending.begin());
-        for(int i = 0; i < n; i++){
-            if(mat[node][i] != 0){
-                int currD = distances[i];
-                int disFromNode = dis + mat[node][i];
-                if(disFromNode < currD){
-                    auto record = pending.find({currD,i});
-                    if(record != pending.end()){
-                        pending.erase(record);
+        
+        vector<int> distances(V,INT_MAX);
+        set<pair<int,int>> mySet;
+        distances[S] = 0;
+        mySet.insert({0,S});
+        while(!mySet.empty()){
+            auto front = *mySet.begin();
+            mySet.erase(front);
+            int dis = front.first;
+            int node = front.second;
+            for(int i = 0; i < V; i++){
+                if(mat[node][i] != -1){
+                    int disFromNode = dis + mat[node][i];
+                    int currDis = distances[i];
+                    if(disFromNode < currDis){
+                        auto record = mySet.find({currDis,i});
+                        if(record != mySet.end()){
+                            mySet.erase(record);
+                        }
+                        distances[i] = disFromNode;
+                        mySet.insert({distances[i],i});
                     }
-                    distances[i] = disFromNode;
-                    pending.insert({distances[i],i});
                 }
             }
         }
+        return distances;
+        
     }
-    return distances;
-    }
-    
-    
 };
 
 
