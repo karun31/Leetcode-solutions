@@ -10,40 +10,41 @@ class Solution
     //be performed in a meeting room.
     
     class Meeting{
-      public:
-      int st;
-      int et;
-      
-      Meeting(int s, int e){
-          st = s;
-          et = e;
-      }
+        public:
+        int start;
+        int end;
         
+        Meeting(int s, int e){
+            start = s;
+            end = e;
+        }
     };
     
-    bool static comp(Meeting m1, Meeting m2){
-        return m1.et < m2.et;
+    
+    static bool comparator(Meeting a, Meeting b){
+        return a.end < b.end;
     }
     
     int maxMeetings(int start[], int end[], int n)
     {
         // Your code here
-        vector<Meeting> meets;
+        vector<Meeting> v;
         for(int i = 0; i < n; i++){
             Meeting m(start[i],end[i]);
-            meets.push_back(m);
+            v.push_back(m);
         }
-        sort(meets.begin(),meets.end(),comp);
+        sort(v.begin(),v.end(),comparator);
         
-        int count = 1;
-        int currEnd = meets[0].et;
+        
+        int cnt = 1;
+        int currEnd = v[0].end;
         for(int i = 1; i < n; i++){
-            if(meets[i].st > currEnd){
-                count++;
-                currEnd = meets[i].et;
+            if(v[i].start > currEnd){
+                cnt++;
+                currEnd = v[i].end;
             }
         }
-        return count;
+        return cnt;
         
     }
 };
