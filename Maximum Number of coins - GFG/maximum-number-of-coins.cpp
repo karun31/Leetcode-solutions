@@ -8,46 +8,43 @@ using namespace std;
 class Solution{
     public:
     
-        int recurHelp(vector<int>& nums, int si, int ei){
+        int recurHelp(int N, vector<int>& a, int si, int ei){
             if(si > ei){
                 return 0;
             }
-            int maxAns = INT_MIN;
-            for(int ind = si; ind <= ei; ind++){
-                int cost = nums[ind]*nums[si-1]*nums[ei+1] + recurHelp(nums,si,ind-1) + recurHelp(nums,ind+1,ei);
-                maxAns = max(maxAns,cost);
+            int maxScore = INT_MIN;
+            for(int i = si; i <= ei; i++){
+                int cost = recurHelp(N,a,si,i-1) + recurHelp(N,a,i+1,ei) + a[si-1]*a[i]*a[ei+1];
+                maxScore = max(maxScore, cost);
             }
-            return maxAns;
+            return maxScore;
         }
         
-        int dpHelp(vector<int>& nums){
-            int n = nums.size();
-            vector<vector<int>> dp(n+1,vector<int>(n+1,0));
-            
-            for(int si = n-2; si >= 1; si--){
-                for(int ei = 1; ei <= n-2; ei++){
-                    if(si > ei){
-                        continue;
-                    }
-                    int maxAns = INT_MIN;
-                    for(int ind = si; ind <= ei; ind++){
-                        int cost = nums[ind]*nums[si-1]*nums[ei+1] + dp[si][ind-1] + dp[ind+1][ei];
-                        maxAns = max(maxAns,cost);
-                    }
-                    dp[si][ei] = maxAns;
-                }
+        int memoHelp(int N, vector<int>& a, int si, int ei, vector<vector<int>>& memo){
+            if(si > ei){
+                return 0;
             }
-            return dp[1][n-2];
-        }
+            if(memo[si][ei] != -1){
+                return memo[si][ei];
+            }
+            int maxScore = INT_MIN;
+            for(int i = si; i <= ei; i++){
+                int cost = memoHelp(N,a,si,i-1,memo) + memoHelp(N,a,i+1,ei,memo) + a[si-1]*a[i]*a[ei+1];
+                maxScore = max(maxScore, cost);
+            }
+            return memo[si][ei] = maxScore;
+        }       
+    
     
         int maxCoins(int N, vector <int> &a)
         {
-                // write your code here
-                a.push_back(1);
-                a.insert(a.begin(),1);
-                int n = a.size();
-                return dpHelp(a);
-                return recurHelp(a,1,n-2);
+            // write your code here
+            a.push_back(1);
+            a.insert(a.begin(),1);
+            N = a.size();
+            vector<vector<int>> memo(N,vector<int>(N,-1));
+            return memoHelp(N,a,1,N-2,memo);
+            //return recurHelp(N,a,1,N-2);
         }
 };
 
