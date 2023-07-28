@@ -36,12 +36,32 @@ class Solution{
         }       
     
     
+        int dpHelp(int N, vector<int>& a){
+            vector<vector<int>> dp(N,vector<int>(N,0));
+            for(int si = N-2; si >= 1; si--){
+                for(int ei = 1; ei <= N-2; ei++){
+                    if(si > ei){
+                        dp[si][ei] = 0;
+                        continue;
+                    }
+                    int maxScore = INT_MIN;
+                    for(int i = si; i <= ei; i++){
+                        int cost = dp[si][i-1] + dp[i+1][ei] + a[si-1]*a[i]*a[ei+1];
+                        maxScore = max(maxScore,cost);
+                    }
+                    dp[si][ei] = maxScore;
+                }
+            }
+            return dp[1][N-2];
+        }
+    
         int maxCoins(int N, vector <int> &a)
         {
             // write your code here
             a.push_back(1);
             a.insert(a.begin(),1);
             N = a.size();
+            return dpHelp(N,a);
             vector<vector<int>> memo(N,vector<int>(N,-1));
             return memoHelp(N,a,1,N-2,memo);
             //return recurHelp(N,a,1,N-2);
