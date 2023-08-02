@@ -11,43 +11,24 @@ class Solution
     vector <int> dijkstra(int V, vector<vector<int>> adj[], int S)
     {
         // Code here
-        vector<vector<int>> mat(V,vector<int>(V,-1));
-        for(int i = 0; i < V; i++){
-            vector<vector<int>> temp = adj[i];
-            for(int j = 0; j < temp.size(); j++){
-                int s = temp[j][0];
-                int w = temp[j][1];
-                mat[i][s] = w;
-                mat[s][i] = w;
-            }
-        }
-        
+        vector<int> ans;
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+        pq.push({0,S});
         vector<int> distances(V,INT_MAX);
-        set<pair<int,int>> mySet;
         distances[S] = 0;
-        mySet.insert({0,S});
-        while(!mySet.empty()){
-            auto front = *mySet.begin();
-            mySet.erase(front);
-            int dis = front.first;
-            int node = front.second;
-            for(int i = 0; i < V; i++){
-                if(mat[node][i] != -1){
-                    int disFromNode = dis + mat[node][i];
-                    int currDis = distances[i];
-                    if(disFromNode < currDis){
-                        auto record = mySet.find({currDis,i});
-                        if(record != mySet.end()){
-                            mySet.erase(record);
-                        }
-                        distances[i] = disFromNode;
-                        mySet.insert({distances[i],i});
-                    }
+        while(!pq.empty()){
+            auto front = pq.top();
+            pq.pop();
+            int dist = front.first, node = front.second;
+            for(auto it: adj[node]){
+                int adjV = it[0], wt = it[1];
+                if(dist + wt < distances[adjV]){
+                    distances[adjV] = dist + wt;
+                    pq.push({dist+wt,adjV});
                 }
             }
         }
         return distances;
-        
     }
 };
 
