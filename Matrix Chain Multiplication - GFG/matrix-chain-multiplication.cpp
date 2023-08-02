@@ -42,8 +42,31 @@ public:
         return memo[si][ei] = minVal;
     }
 
+
+    int dpHelp(int N, int arr[]){
+        vector<vector<int>> dp(N,vector<int>(N,0));
+        
+        for(int si = N-2; si >= 0; si--){
+            for(int ei = 0; ei <= N-2; ei++){
+                if(si >= ei){
+                    continue;
+                }
+                int minVal = INT_MAX;
+                for(int k = si; k < ei; k++){
+                    int lVal = dp[si][k];
+                    int rVal = dp[k+1][ei];
+                    int multiVal = arr[si]*arr[k+1]*arr[ei+1];
+                    minVal = min(minVal, lVal + rVal + multiVal);
+                }
+                dp[si][ei] = minVal;
+            }
+        }
+        return dp[0][N-2];
+    }
+
     int matrixMultiplication(int N, int arr[])
     {
+        return dpHelp(N,arr);
         vector<vector<int>> memo(N,vector<int>(N,-1));
         return memoHelp(N,arr,0,N-2,memo);
         return recurHelp(N,arr,0,N-2);
